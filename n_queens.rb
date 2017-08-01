@@ -120,19 +120,23 @@ def solve_n_queens(n)
   ## if bad placement, remove and place in next spot
   ## if good placement try the same with the next row
   ## once queen is in valid spot do the same with the next row of the board
-  place_queen_on_row = lambda do |row, board|
+  place_queen_on_row = lambda do |row, board, cols_used|
     if board.all?{|row| row.include?("Q") }
       board_results = board_results + [board.clone]
       return
     end
 
     board.size.times do |i|
+      next if cols_used.include?(i)
+
       split_row = board[row].split('')
       split_row[i] = "Q"
       board[row] = split_row.join('')
       if valid_board?(board)
-        place_queen_on_row.call(row+1, board)
+        cols_used << i
+        place_queen_on_row.call(row+1, board, cols_used)
       end
+      cols_used.delete(i)
       board[row] = "."*board.size
     end
 
@@ -140,7 +144,7 @@ def solve_n_queens(n)
   base_board = []
   n.times{ base_board << "." * n }
 
-  place_queen_on_row.call(0, base_board)
+  place_queen_on_row.call(0, base_board, [])
   board_results
 end
 
