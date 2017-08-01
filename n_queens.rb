@@ -22,7 +22,7 @@ BOARD_A = [
              ["Q...",
               "..Q.",
               "....",
-              "...."]
+              "...."] ## valid
           ]
 
           #   [Q . . . .]
@@ -60,7 +60,7 @@ BOARD_A = [
 # [. . Q . .] 17 diagonals = 21, 23, 11, 13, 5, 9,
 # [. . . . Q] 24 diagonals = 18, 12, 6, 0
 
-def valid_board?(ary)
+def old_valid_board?(ary)
   queen_placements = ary.map{|x| x.index("Q")} ## could check duplicates here for fast return
 
   board_as_string = ary.join('').split('')
@@ -112,6 +112,23 @@ def valid_board?(ary)
   end
 
   return true
+end
+
+def valid_board?(board)
+  twod_board = board.map{ |x| x.split("") }
+  twod_board.each_with_index do |row, idx|
+    curr_col = row.index("Q")
+    next if curr_col == nil
+    twod_board.each_with_index do |other_row, other_idx|
+      next if idx == other_idx
+      other_col = other_row.index("Q")
+      next if other_col == nil
+      cd = (other_col - curr_col).abs
+      rd = (other_idx - idx).abs
+      return false if cd == rd
+    end
+  end
+  true
 end
 
 def solve_n_queens(n)
